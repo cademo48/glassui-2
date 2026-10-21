@@ -58,7 +58,7 @@ over rounds of multi-agent visual review against the reference.
 | `src/scene/sdf.ts` | CPU copy of the distance field, used to tell when the pointer is over the button (keep it in step with `sdf.glsl`) |
 | `src/interaction/` | Turntable (drag, flick, springs), the latching button and its keyboard stand-in |
 | `src/audio/sfx.ts` | Synthesized sound effects and the mute preference |
-| `src/ui/` | The orbit ring and the About card |
+| `src/ui/` | The orbit ring, the About card and the quality menu |
 | `src/gl/quality.ts` | Steps bounces and march steps down when frames run long, keeping full sharpness; the pixel ratio drops only below about 15 fps. Undoes a step that didn't speed anything up (a 30 fps cap, for example) |
 
 ## Controls
@@ -70,6 +70,8 @@ over rounds of multi-agent visual review against the reference.
   the button toggles it: set into the glass, or released. Sliding off before letting go cancels.
 - **Home** turns the slab back to its rest pose.
 - **Speaker** (top right) turns sound on or off; the choice is remembered.
+- **Quality** (bottom left) picks Auto or a fixed render quality: Full, Balanced, Soft or Fast. The choice
+  is remembered.
 
 ## Sound
 

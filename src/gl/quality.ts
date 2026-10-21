@@ -9,6 +9,8 @@
 // frames isn't clearly faster, the step bought nothing: it is undone and the governor stops there.
 
 export interface QualityTier {
+  /** What the quality menu calls it. */
+  name: string;
   dpr: number;
   bounces: number;
   steps: number;
@@ -17,12 +19,12 @@ export interface QualityTier {
 }
 
 export const QUALITY_TIERS: QualityTier[] = [
-  { dpr: 2, bounces: 5, steps: 96, rimSamples: 4 },
+  { name: 'Full', dpr: 2, bounces: 5, steps: 96, rimSamples: 4 },
   // The cheapest that still looks clean: below 64 steps or 2 rim samples the rims turn jagged.
-  { dpr: 2, bounces: 4, steps: 64, rimSamples: 2 },
+  { name: 'Balanced', dpr: 2, bounces: 4, steps: 64, rimSamples: 2 },
   // Softer: only below about 15 fps.
-  { dpr: 1.5, bounces: 3, steps: 48, rimSamples: 2 },
-  { dpr: 1, bounces: 3, steps: 32, rimSamples: 1 },
+  { name: 'Soft', dpr: 1.5, bounces: 3, steps: 48, rimSamples: 2 },
+  { name: 'Fast', dpr: 1, bounces: 3, steps: 32, rimSamples: 1 },
 ];
 
 /** Frame time that steps down to a cheaper tier at the same sharpness. */
@@ -51,12 +53,23 @@ export class QualityGovernor {
   averageMs = 16.7;
   /** Set once a step down didn't help: frame time is then capped by something other than the GPU. */
   settled = false;
+  /** Set when the viewer picked a tier: frames are still timed, but nothing changes on its own. */
+  manual = false;
   private elapsed = 0;
   private slowFor = 0;
   private slowSum = 0;
   private slowCount = 0;
   private trial: Trial | null = null;
   private skipNext = false;
+
+  /** Locks a tier the viewer picked, or (null) hands control back and starts again from the top. */
+  choose(tier: number | null) {
+    this.manual = tier !== null;
+    this.tier = tier ?? 0;
+    this.settled = false;
+    this.trial = null;
+    this.elapsed = this.slowFor = this.slowSum = this.slowCount = 0;
+  }
 
   /** Ignores the next frame: the gap after the tab was hidden isn't render time. */
   resume() {
@@ -75,6 +88,7 @@ export class QualityGovernor {
     const ms = Math.min(frameMs, FRAME_CAP_MS);
     this.averageMs += (ms - this.averageMs) * 0.1;
 
+    if (this.manual) return false;
     if (this.trial) return this.judgeTrial(this.trial, ms);
     if (this.settled) return false;
 

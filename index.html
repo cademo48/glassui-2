@@ -89,6 +89,22 @@
       <p class="caption">Drag to rotate</p>
     </div>
 
+    <div class="quality" id="quality" hidden>
+      <ul class="quality-list" id="qualityList" role="listbox" aria-label="Render quality" tabindex="-1" hidden></ul>
+      <button
+        type="button"
+        class="quality-button"
+        id="qualityButton"
+        aria-haspopup="listbox"
+        aria-expanded="false"
+        aria-controls="qualityList"
+      >
+        <span class="quality-label">Quality</span>
+        <span class="quality-value" id="qualityValue">Auto</span>
+        <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 10 8 6.5l3.5 3.5" /></svg>
+      </button>
+    </div>
+
     <div class="fallback" id="fallback" hidden>
       <div class="fallback-glass"><span class="fallback-pill">Press</span></div>
       <p class="fallback-note">Your browser can't run the live glass, so this is a still version.</p>

@@ -9,6 +9,7 @@ import { bindPressProxy, LatchingButton, PressSpring } from './interaction/press
 import { Turntable } from './interaction/turntable';
 import { params } from './params';
 import { bindCards } from './ui/cards';
+import { QualityMenu, readQualityPref } from './ui/quality-menu';
 import { Ring } from './ui/ring';
 
 const DEG = Math.PI / 180;
@@ -78,6 +79,11 @@ function boot() {
   const turntable = new Turntable(params.motion.pitchLimit * DEG);
   const press = new PressSpring();
   const governor = new QualityGovernor();
+  const qualityPref = readQualityPref();
+  if (qualityPref !== null) {
+    governor.choose(qualityPref);
+    stage.qualityTier = governor.tier;
+  }
   const restQuaternion = new THREE.Quaternion();
   const restEuler = new THREE.Euler(0, 0, 0, 'YXZ');
   const pose: Pose = { position: new THREE.Vector3(), quaternion: new THREE.Quaternion(), press: 0, focus: 0 };
@@ -154,6 +160,24 @@ function boot() {
   }
   home = () => turntable.home();
 
+  const qualityMenu = new QualityMenu(
+    $('quality'),
+    $<HTMLButtonElement>('qualityButton'),
+    $('qualityValue'),
+    $<HTMLUListElement>('qualityList'),
+    {
+      choose: (choice) => {
+        sfx.play('click');
+        governor.choose(choice);
+        stage.qualityTier = governor.tier;
+        layout();
+      },
+      current: () => governor.tier,
+    },
+    qualityPref,
+  );
+  $('quality').hidden = captureMode;
+
   // ---- Frame loop ----------------------------------------------------------------------------
 
   let last = performance.now();
@@ -197,6 +221,7 @@ function boot() {
     if (!captureMode && governor.sample(frameMs)) {
       stage.qualityTier = governor.tier;
       layout();
+      qualityMenu.update();
     }
     if (!ready && labelDrawn) {
       ready = true;
@@ -216,6 +241,7 @@ function boot() {
 
   if (query.has('stats')) {
     const stats = document.createElement('p');
+    stats.setAttribute('aria-hidden', 'true');
     stats.className = 'stats';
     document.body.append(stats);
     window.setInterval(() => {
