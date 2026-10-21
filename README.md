@@ -59,7 +59,7 @@ over rounds of multi-agent visual review against the reference.
 | `src/interaction/` | Turntable (drag, flick, springs), the latching button and its keyboard stand-in |
 | `src/audio/sfx.ts` | Synthesized sound effects and the mute preference |
 | `src/ui/` | The orbit ring and the About card |
-| `src/gl/quality.ts` | Steps bounces, march steps and then the pixel ratio down when frames run long, and undoes a step that didn't speed anything up (a 30 fps cap, for example) |
+| `src/gl/quality.ts` | Steps bounces and march steps down when frames run long, keeping full sharpness; the pixel ratio drops only below about 15 fps. Undoes a step that didn't speed anything up (a 30 fps cap, for example) |
 
 ## Controls
 

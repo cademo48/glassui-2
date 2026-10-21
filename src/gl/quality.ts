@@ -1,6 +1,8 @@
-// Steps rendering cost down when frames run long: first the internal bounces, march steps and rim
-// samples, then the pixel ratio, since a lower pixel ratio is what makes the glass look soft. The
-// limits are uniforms inside fixed loop bounds, so a change never recompiles a shader.
+// Steps rendering cost down when frames run long. Sharpness comes first: the first tiers only cut
+// internal bounces, march steps and rim samples, at full pixel ratio. Lowering the pixel ratio is
+// what makes the glass look soft, so the last tiers are a safety net for a GPU that still can't
+// reach CHOPPY_MS, not a trade for smoothness. The limits are uniforms inside fixed loop bounds, so
+// a change never recompiles a shader.
 //
 // Long frames don't always mean the GPU is struggling: Safari caps pages at 30 fps in Low Power Mode,
 // and some displays refresh slower than 60 Hz. So each step down is a trial. If the next second of
@@ -16,13 +18,17 @@ export interface QualityTier {
 
 export const QUALITY_TIERS: QualityTier[] = [
   { dpr: 2, bounces: 5, steps: 96, rimSamples: 4 },
+  // The cheapest that still looks clean: below 64 steps or 2 rim samples the rims turn jagged.
   { dpr: 2, bounces: 4, steps: 64, rimSamples: 2 },
-  { dpr: 1.5, bounces: 4, steps: 64, rimSamples: 2 },
-  { dpr: 1.25, bounces: 4, steps: 48, rimSamples: 1 },
+  // Softer: only below about 15 fps.
+  { dpr: 1.5, bounces: 3, steps: 48, rimSamples: 2 },
   { dpr: 1, bounces: 3, steps: 32, rimSamples: 1 },
 ];
 
+/** Frame time that steps down to a cheaper tier at the same sharpness. */
 const SLOW_MS = 21;
+/** Frame time that steps down to a lower pixel ratio: by then motion is too choppy to keep it. */
+const CHOPPY_MS = 66;
 const SLOW_FOR_MS = 900;
 const WARMUP_MS = 1500;
 /** A single frame counts for at most this long, so one hitch (a GC pause, a tab switch) can't drop a tier. */
@@ -72,14 +78,16 @@ export class QualityGovernor {
     if (this.trial) return this.judgeTrial(this.trial, ms);
     if (this.settled) return false;
 
-    if (this.averageMs > SLOW_MS) {
+    const next = QUALITY_TIERS[this.tier + 1];
+    const limit = next && next.dpr < QUALITY_TIERS[this.tier].dpr ? CHOPPY_MS : SLOW_MS;
+    if (this.averageMs > limit) {
       this.slowFor += ms;
       this.slowSum += ms;
       this.slowCount++;
     } else {
       this.slowFor = this.slowSum = this.slowCount = 0;
     }
-    if (this.slowFor > SLOW_FOR_MS && this.tier < QUALITY_TIERS.length - 1) {
+    if (this.slowFor > SLOW_FOR_MS && next) {
       this.trial = { beforeMs: this.slowSum / this.slowCount, settle: 0, sum: 0, count: 0 };
       this.slowFor = this.slowSum = this.slowCount = 0;
       this.tier++;
