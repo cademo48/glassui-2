@@ -56,7 +56,7 @@ over rounds of multi-agent visual review against the reference.
 | `src/scene/sdf.ts` | CPU copy of the distance field, used to tell when the pointer is over the button (keep it in step with `sdf.glsl`) |
 | `src/interaction/` | Turntable (drag, flick, springs), the latching button and its keyboard stand-in |
 | `src/audio/sfx.ts` | Synthesized sound effects and the mute preference |
-| `src/ui/` | The orbit ring and the About / Contact cards |
+| `src/ui/` | The orbit ring and the About card |
 | `src/gl/quality.ts` | Steps the pixel ratio, bounces and march steps down when frames run long |
 
 ## Controls
@@ -81,7 +81,7 @@ through a small synthetic reverb and a limiter, with no sound files.
 | Bloop and a rising shimmer | It releases and pops back up |
 | Soft tick | Every 15° of rotation, panned with the knob |
 | Click | The chevrons |
-| Airy whoosh | The About and Contact cards open or close |
+| Airy whoosh | The About card opens or closes |
 
 The audio graph is built on the first click or key press, as browsers require.
 
@@ -97,5 +97,3 @@ static CSS version.
 - `npm run compare [name]` compares a capture with `dev/reference.jpg`. It writes side-by-sides, close-ups
   and OKLab ΔE metrics to `review/out/`.
 - `node scripts/fit-gradient.mjs` fits the backdrop gradient to the reference.
-
-The contact address in the Contact card is a placeholder (`hello@example.com`).

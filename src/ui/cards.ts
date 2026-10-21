@@ -1,17 +1,16 @@
-type CardName = 'about' | 'contact';
+type CardName = 'about';
 
-const isCard = (name: string | undefined): name is CardName => name === 'about' || name === 'contact';
+const isCard = (name: string | undefined): name is CardName => name === 'about';
 
 /**
- * Nav: About and Contact open small frosted cards (one at a time; Esc or a click elsewhere closes
- * them, and #about / #contact links open them directly). Home closes them and calls onHome.
+ * Nav: About opens a small frosted card (Esc or a click elsewhere closes it, and an #about link
+ * opens it directly). Home closes it and calls onHome.
  * onCard hears every card opening or closing.
  */
 export function bindCards(onHome: () => void, onCard: (open: boolean) => void = () => {}) {
   const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-nav]'));
   const cards: Record<CardName, HTMLElement> = {
     about: document.getElementById('about') as HTMLElement,
-    contact: document.getElementById('contact') as HTMLElement,
   };
   let open: CardName | null = null;
 

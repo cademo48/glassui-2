@@ -215,7 +215,7 @@ body {
   line-height: 20px;
 }
 
-/* ---- About / Contact cards ----------------------------------------------------------------- */
+/* ---- About card -------------------------------------------------------------------------- */
 
 .card {
   position: fixed;
@@ -262,11 +262,6 @@ body {
 .card dd {
   margin: 0;
   color: var(--ink-soft);
-}
-.card-link {
-  color: var(--ink);
-  font-weight: 600;
-  text-underline-offset: 4px;
 }
 @keyframes card-in {
   from {
