@@ -246,6 +246,18 @@ export class Stage {
     return paintLabel(texture, { text, weight, width, family: 'Inter Variable' });
   }
 
+  /**
+   * Compiles every shader ahead of the first frame. Where the browser supports
+   * KHR_parallel_shader_compile this happens off the main thread, so the page stays responsive while
+   * the (large) glass shader builds instead of stalling on the first draw.
+   */
+  async compile(): Promise<void> {
+    await Promise.all([
+      this.renderer.compileAsync(this.backdropScene, this.screenCamera),
+      this.renderer.compileAsync(this.screenScene, this.camera),
+    ]);
+  }
+
   /** Sizes the canvas and its targets, and reframes the camera. */
   setSize(cssWidth: number, cssHeight: number, devicePixelRatio: number) {
     this.cssWidth = Math.max(1, cssWidth);

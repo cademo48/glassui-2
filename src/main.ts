@@ -203,7 +203,16 @@ function boot() {
       root.setAttribute('data-ready', '');
     }
   };
-  stage.renderer.setAnimationLoop(frame);
+  const start = () => {
+    last = performance.now();
+    stage.renderer.setAnimationLoop(frame);
+  };
+  // Start drawing once the shaders are built, so the first frame doesn't stall the page on compiling them.
+  stage.compile().then(start, (error) => {
+    console.error(error);
+    start();
+  });
+  document.addEventListener('visibilitychange', () => governor.resume());
 
   if (import.meta.env.DEV && query.has('debug')) {
     // Steps the frame loop by hand (for testing while the page isn't being painted).
