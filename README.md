@@ -59,7 +59,7 @@ over rounds of multi-agent visual review against the reference.
 | `src/interaction/` | Turntable (drag, flick, springs), the latching button and its keyboard stand-in |
 | `src/audio/sfx.ts` | Synthesized sound effects and the mute preference |
 | `src/ui/` | The orbit ring and the About card |
-| `src/gl/quality.ts` | Steps the pixel ratio, bounces and march steps down when frames run long |
+| `src/gl/quality.ts` | Steps bounces, march steps and then the pixel ratio down when frames run long, and undoes a step that didn't speed anything up (a 30 fps cap, for example) |
 
 ## Controls
 
@@ -89,6 +89,9 @@ The audio graph is built on the first click or key press, as browsers require.
 
 `prefers-reduced-motion` turns off the idle float and the coasting. Without WebGL 2 the page shows a
 static CSS version.
+
+Add `?stats` to the address to see the frame rate and the quality the page settled on, which is handy on a
+phone or tablet without dev tools.
 
 ## Dev tools (stripped from production builds)
 

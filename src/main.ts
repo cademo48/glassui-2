@@ -214,6 +214,17 @@ function boot() {
   });
   document.addEventListener('visibilitychange', () => governor.resume());
 
+  if (query.has('stats')) {
+    const stats = document.createElement('p');
+    stats.className = 'stats';
+    document.body.append(stats);
+    window.setInterval(() => {
+      const fps = Math.round(1000 / governor.averageMs);
+      const settled = governor.settled ? ' · capped by display' : '';
+      stats.textContent = `${fps} fps · tier ${governor.tier} · ${stage.pixelRatio}× pixels${settled}`;
+    }, 500);
+  }
+
   if (import.meta.env.DEV && query.has('debug')) {
     // Steps the frame loop by hand (for testing while the page isn't being painted).
     const advance = (ms: number) => {

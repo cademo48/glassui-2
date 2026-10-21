@@ -327,6 +327,18 @@ body {
   display: none;
 }
 
+/* ?stats: what the quality governor chose, for checking a device without dev tools. */
+.stats {
+  position: fixed;
+  left: calc(12px + env(safe-area-inset-left, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  margin: 0;
+  color: var(--ink-soft);
+  font: 500 12px/1.4 var(--font);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
 .visually-hidden {
   position: absolute !important;
   width: 1px;
