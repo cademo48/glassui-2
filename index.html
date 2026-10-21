@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Press</title>
+    <meta name="description" content="A slab of glass, ray-traced live in your browser. Drag to turn it, and press the button." />
+    <meta name="theme-color" content="#7fb4cf" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <canvas
+      id="stage"
+      role="img"
+      aria-label="A thick slab of frosted glass with a Press button, floating over a blue-to-teal gradient"
+    ></canvas>
+
+    <header class="topbar">
+      <nav class="nav" aria-label="Primary">
+        <a href="#" data-nav="home">Home</a>
+        <a href="#about" data-nav="about" aria-controls="about" aria-expanded="false">About</a>
+        <a href="#contact" data-nav="contact" aria-controls="contact" aria-expanded="false">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <h1 class="visually-hidden">Press</h1>
+      <!-- Keyboard and screen-reader stand-in for the glass button drawn in the canvas (a toggle). -->
+      <button type="button" id="pressProxy" class="visually-hidden" aria-pressed="false">Press</button>
+    </main>
+
+    <button type="button" class="sound-toggle" id="soundToggle" aria-label="Sound" aria-pressed="true">
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path class="speaker" d="M3.5 7.75h2.75L10 4.5v11l-3.75-3.25H3.5z" />
+        <path class="waves" d="M13 7.4a3.6 3.6 0 0 1 0 5.2M15.2 5.3a6.6 6.6 0 0 1 0 9.4" />
+        <path class="muted" d="M13.2 7.9l4.2 4.2M17.4 7.9l-4.2 4.2" />
+      </svg>
+    </button>
+
+    <section class="card" id="about" aria-labelledby="aboutTitle" hidden>
+      <h2 id="aboutTitle">One slab, traced live</h2>
+      <p>
+        Every pixel of the glass follows light through it: bending at the surface, bouncing off the inner
+        walls, and splitting slightly into colour on the way out. It runs in real time as you turn it.
+      </p>
+      <dl>
+        <dt>Drag</dt>
+        <dd>Turn it, or tilt it up and down</dd>
+        <dt>Ring</dt>
+        <dd>Scrub the angle, or focus it and use the arrow keys</dd>
+        <dt>Press</dt>
+        <dd>Push the button in to set it into the glass; push it again to release it</dd>
+        <dt>Sound</dt>
+        <dd>The speaker, top right, turns it on or off</dd>
+      </dl>
+    </section>
+
+    <section class="card" id="contact" aria-labelledby="contactTitle" hidden>
+      <h2 id="contactTitle">Say hello</h2>
+      <p>Questions, ideas, or a project in mind? Send a note and we'll get back to you.</p>
+      <p><a class="card-link" href="mailto:hello@example.com">hello@example.com</a></p>
+    </section>
+
+    <div class="controls" id="controls">
+      <div class="ring-row">
+        <button type="button" class="chevron" id="turnLeft" aria-label="Turn left 45 degrees">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10.5 2.5 5 8l5.5 5.5" /></svg>
+        </button>
+        <div
+          class="ring"
+          id="ring"
+          role="slider"
+          tabindex="0"
+          aria-label="Rotation"
+          aria-valuemin="0"
+          aria-valuemax="359"
+          aria-valuenow="0"
+          aria-valuetext="0 degrees"
+        >
+          <svg viewBox="0 0 132 44" aria-hidden="true">
+            <defs>
+              <linearGradient id="ringStroke" gradientUnits="userSpaceOnUse" x1="4" y1="0" x2="128" y2="0">
+                <stop offset="0" stop-color="var(--ring-dark)" />
+                <stop offset="0.55" stop-color="var(--ring-mid)" />
+                <stop offset="1" stop-color="var(--ring-light)" />
+              </linearGradient>
+            </defs>
+            <path id="ringPath" class="ring-path" d="" />
+            <circle id="ringKnob" class="ring-knob" cx="66" cy="41" r="5.4" />
+          </svg>
+        </div>
+        <button type="button" class="chevron" id="turnRight" aria-label="Turn right 45 degrees">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5.5 2.5 11 8l-5.5 5.5" /></svg>
+        </button>
+      </div>
+      <p class="caption">Drag to rotate</p>
+    </div>
+
+    <div class="fallback" id="fallback" hidden>
+      <div class="fallback-glass"><span class="fallback-pill">Press</span></div>
+      <p class="fallback-note">Your browser can't run the live glass, so this is a still version.</p>
+    </div>
+
+    <noscript><p class="noscript">Turn on JavaScript to see the glass.</p></noscript>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
